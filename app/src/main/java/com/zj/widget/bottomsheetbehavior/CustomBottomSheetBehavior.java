@@ -146,7 +146,6 @@ public class CustomBottomSheetBehavior<V extends View> extends CoordinatorLayout
     private WeakReference<V> mViewRef;
 
     private WeakReference<View> mNestedScrollingChildRef1;
-    private WeakReference<View> mNestedScrollingChildRef2;
 
     private BottomSheetCallback mCallback;
 
@@ -245,7 +244,6 @@ public class CustomBottomSheetBehavior<V extends View> extends CoordinatorLayout
         }
         mViewRef = new WeakReference<>(child);
         mNestedScrollingChildRef1 = new WeakReference<>(findScrollingChild(child));
-        mNestedScrollingChildRef2 = new WeakReference<>(findScrollingChild(child));
         return true;
     }
 
@@ -282,11 +280,7 @@ public class CustomBottomSheetBehavior<V extends View> extends CoordinatorLayout
                 int initialX = (int) event.getX();
                 mInitialY = (int) event.getY();
                 View scroll = mNestedScrollingChildRef1.get();
-                View scroll2 = mNestedScrollingChildRef2.get();
                 if (scroll != null && parent.isPointInChildBounds(scroll, initialX, mInitialY)) {
-                    mActivePointerId = event.getPointerId(event.getActionIndex());
-                    mTouchingScrollingChild = true;
-                } else if (scroll2 != null && parent.isPointInChildBounds(scroll2, initialX, mInitialY)) {
                     mActivePointerId = event.getPointerId(event.getActionIndex());
                     mTouchingScrollingChild = true;
                 }
@@ -300,11 +294,9 @@ public class CustomBottomSheetBehavior<V extends View> extends CoordinatorLayout
         // it is not the top most view of its parent. This is not necessary when the touch event is
         // happening over the scrolling content as nested scrolling logic handles that case.
         View scroll = mNestedScrollingChildRef1.get();
-        View scroll2 = mNestedScrollingChildRef2.get();
-        return action == MotionEvent.ACTION_MOVE && scroll != null && scroll2!=null &&
+        return action == MotionEvent.ACTION_MOVE && scroll != null &&
                 !mIgnoreEvents && mState != STATE_DRAGGING &&
                 !parent.isPointInChildBounds(scroll, (int) event.getX(), (int) event.getY()) &&
-                !parent.isPointInChildBounds(scroll2, (int) event.getX(), (int) event.getY()) &&
                 Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop();
     }
 
@@ -365,7 +357,6 @@ public class CustomBottomSheetBehavior<V extends View> extends CoordinatorLayout
             if (newTop < mMinOffset) {
                 consumed[1] = currentTop - mMinOffset;
                 ViewCompat.offsetTopAndBottom(child, -consumed[1]);
-                //zhengjiong
                 if (currentTop < mHalfOffset) {
                     setStateInternal(STATE_EXPANDED);
                 } else {
@@ -745,12 +736,12 @@ public class CustomBottomSheetBehavior<V extends View> extends CoordinatorLayout
                 top = mMaxOffset;
                 targetState = STATE_COLLAPSED;
             }
-            if (mViewDragHelper.settleCapturedViewAt(releasedChild.getLeft(), top)) {
+            /*if (mViewDragHelper.settleCapturedViewAt(releasedChild.getLeft(), top)) {
                 setStateInternal(STATE_SETTLING);
                 ViewCompat.postOnAnimation(releasedChild, new SettleRunnable(releasedChild, targetState));
             } else {
                 setStateInternal(targetState);
-            }
+            }*/
         }
 
         @Override

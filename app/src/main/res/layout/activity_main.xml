@@ -67,7 +67,7 @@
         android:paddingTop="?attr/actionBarSize"
         app:halfOffset="130dp"
         app:hideable="false"
-        app:layout_behavior="com.zj.widget.bottomsheetbehavior.CustomBottomSheetBehavior2"
+        app:layout_behavior="com.zj.widget.bottomsheetbehavior.CustomBottomSheetBehavior"
         app:peekHeight="?attr/actionBarSize">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview1"
