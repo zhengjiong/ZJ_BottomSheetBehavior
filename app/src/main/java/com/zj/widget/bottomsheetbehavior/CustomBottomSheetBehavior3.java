@@ -87,11 +87,13 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
      */
     public static final int STATE_HIDDEN = 5;
 
+    public static final int STATE_HALF_EXPANDED = 6;
+
     /**
      * @hide
      */
     @RestrictTo(LIBRARY_GROUP)
-    @IntDef({STATE_EXPANDED, STATE_COLLAPSED, STATE_DRAGGING, STATE_SETTLING, STATE_HIDDEN})
+    @IntDef({STATE_EXPANDED, STATE_COLLAPSED, STATE_DRAGGING, STATE_SETTLING, STATE_HIDDEN, STATE_HALF_EXPANDED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface State {
     }
@@ -206,6 +208,7 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
         if (ViewCompat.getFitsSystemWindows(parent) && !ViewCompat.getFitsSystemWindows(child)) {
             ViewCompat.setFitsSystemWindows(child, true);
         }
+        System.out.println("onLayoutChild");
         int savedTop = child.getTop();
         // First let the parent lay it out
         parent.onLayoutChild(child, layoutDirection);
@@ -454,17 +457,45 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
         mNestedScrolled = false;
     }
 
+    /**
+     * ####onNestedPreFling 这个是 NestedScrollingChild 要滑行时候触发的,询问 BehaviorView是否消耗这个滑行.
+     * <p>
+     * 返回值: true表示BehaviorView 消耗滑行事件,那么NestedScrollingChild就不会有滑行了
+     *
+     * @param coordinatorLayout
+     * @param child
+     * @param target
+     * @param velocityX
+     * @param velocityY
+     * @return
+     */
     @Override
     public boolean onNestedPreFling(CoordinatorLayout coordinatorLayout, V child, View target,
                                     float velocityX, float velocityY) {
-        /*return target == mNestedScrollingChildRef1.get() &&
-                (mState != STATE_EXPANDED ||
-                        super.onNestedPreFling(coordinatorLayout, child, target,
-                                velocityX, velocityY));*/
-        return (target == mNestedScrollingChildRef1.get() || target == mNestedScrollingChildRef2.get()) &&
+        if (mState == STATE_EXPANDED) {
+            return false;
+        }
+        if (target == mNestedScrollingChildRef1.get() && target.canScrollVertically(-1)) {
+            return false;
+        } else if (target == mNestedScrollingChildRef2.get() && target.canScrollVertically(-1)) {
+            return false;
+        }
+        return true;
+        /*boolean result1 = target == mNestedScrollingChildRef1.get() &&
                 (mState != STATE_EXPANDED ||
                         super.onNestedPreFling(coordinatorLayout, child, target,
                                 velocityX, velocityY));
+
+        boolean result2 = target == mNestedScrollingChildRef2.get() &&
+                (mState != STATE_EXPANDED ||
+                        super.onNestedPreFling(coordinatorLayout, child, target,
+                                velocityX, velocityY));
+        System.out.println("onNestedPreFling result1=" + result1 + " ,result2=" + result2);
+        *//*return (target == mNestedScrollingChildRef1.get() || target == mNestedScrollingChildRef2.get()) &&
+                (mState != STATE_EXPANDED ||
+                        super.onNestedPreFling(coordinatorLayout, child, target,
+                                velocityX, velocityY));*//*
+        return result1;*/
     }
 
     /**

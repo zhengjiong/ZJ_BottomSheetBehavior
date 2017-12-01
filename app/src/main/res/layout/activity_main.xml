@@ -69,6 +69,7 @@
         app:hideable="false"
         app:layout_behavior="com.zj.widget.bottomsheetbehavior.CustomBottomSheetBehavior3"
         app:peekHeight="?attr/actionBarSize">
+        <!--app:layout_behavior="com.zj.widget.bottomsheetbehavior.CustomBottomSheetBehavior3"-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview1"
             android:layout_width="100dp"

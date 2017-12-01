@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         val behavior = CustomBottomSheetBehavior3.from(scrollView)
         behavior.state = CustomBottomSheetBehavior3.STATE_EXPANDED
+        //behavior.isHideable = true
         behavior.setBottomSheetCallback(object : CustomBottomSheetBehavior3.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == CustomBottomSheetBehavior3.STATE_COLLAPSED) {
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                println("slideOffset = ${slideOffset}")
+                //println("slideOffset = ${slideOffset}")
                 if (slideOffset >= 1) {
                     toolbar.title = "百果园-天鹅湖店"
                 } else {
