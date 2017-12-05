@@ -22,18 +22,18 @@ class MainActivity : AppCompatActivity() {
         val scrollView = findViewById<View>(R.id.scrollView)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
-        val behavior = CustomBottomSheetBehavior3.from(scrollView)
-        behavior.state = CustomBottomSheetBehavior3.STATE_EXPANDED
+        val behavior = CustomBottomSheetBehavior2.from(scrollView)
+        behavior.state = CustomBottomSheetBehavior2.STATE_EXPANDED
         //behavior.isHideable = true
-        behavior.setBottomSheetCallback(object : CustomBottomSheetBehavior3.BottomSheetCallback() {
+        behavior.setBottomSheetCallback(object : CustomBottomSheetBehavior2.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == CustomBottomSheetBehavior3.STATE_COLLAPSED) {
+                if (newState == CustomBottomSheetBehavior2.STATE_COLLAPSED) {
                     //Toast.makeText(this@MainActivity, "折叠了", Toast.LENGTH_SHORT).show()
-                } else if (newState == CustomBottomSheetBehavior3.STATE_EXPANDED) {
+                } else if (newState == CustomBottomSheetBehavior2.STATE_EXPANDED) {
                     //Toast.makeText(this@MainActivity, "展开了", Toast.LENGTH_SHORT).show()
-                } else if (newState == CustomBottomSheetBehavior3.STATE_HIDDEN) {
+                } else if (newState == CustomBottomSheetBehavior2.STATE_HIDDEN) {
                     //Toast.makeText(this@MainActivity, "隐藏了", Toast.LENGTH_SHORT).show()
-                } /*else if (newState == CustomBottomSheetBehavior3.STATE_HALF) {
+                } /*else if (newState == CustomBottomSheetBehavior2.STATE_HALF) {
                     //Toast.makeText(this@MainActivity, "HALF", Toast.LENGTH_SHORT).show()
                 }*/
 

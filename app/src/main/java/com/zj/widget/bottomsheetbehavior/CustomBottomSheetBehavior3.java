@@ -302,6 +302,7 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
                 break;
         }
         if (!mIgnoreEvents && mViewDragHelper.shouldInterceptTouchEvent(event)) {
+            System.out.println("onInterceptTouchEvent mViewDragHelper true");
             return true;
         }
         // We have to handle cases that the ViewDragHelper does not capture the bottom sheet because
@@ -314,6 +315,7 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
                 !parent.isPointInChildBounds(scroll1, (int) event.getX(), (int) event.getY()) &&
                 !parent.isPointInChildBounds(scroll2, (int) event.getX(), (int) event.getY()) &&
                 Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop();
+        System.out.println("onInterceptTouchEvent mViewDragHelper result1=" + result1);
         return result1;
         /*boolean result2 = action == MotionEvent.ACTION_MOVE && scroll2 != null &&
                 !mIgnoreEvents && mState != STATE_DRAGGING &&
@@ -358,6 +360,7 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
         // to capture the bottom sheet in case it is not captured and the touch slop is passed.
         if (action == MotionEvent.ACTION_MOVE && !mIgnoreEvents) {
             if (Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop()) {
+                System.out.println("onTouchEvent ");
                 mViewDragHelper.captureChildView(child, event.getPointerId(event.getActionIndex()));
             }
         }
@@ -372,9 +375,19 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
         return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 
+    /**
+     *
+     * @param coordinatorLayout
+     * @param child  设置了behavior那个layout
+     * @param target 当前滑动的recyclerview
+     * @param dx
+     * @param dy 大于0向上滑动, 小于0向下滑动
+     * @param consumed
+     */
     @Override
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx,
                                   int dy, int[] consumed) {
+        System.out.println("onNestedPreScroll dy=" + dy);
         View scrollingChild1 = mNestedScrollingChildRef1.get();
         View scrollingChild2 = mNestedScrollingChildRef2.get();
         if (target != scrollingChild1 && target != scrollingChild2) {
@@ -382,7 +395,8 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
         }
         int currentTop = child.getTop();
         int newTop = currentTop - dy;
-        if (dy > 0) { // Upward
+        System.out.print(" newTop=" + newTop);
+        if (dy > 0) { // Upward 向上滑动
             if (newTop < mMinOffset) {
                 consumed[1] = currentTop - mMinOffset;
                 ViewCompat.offsetTopAndBottom(child, -consumed[1]);
@@ -392,8 +406,10 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
                 ViewCompat.offsetTopAndBottom(child, -dy);
                 setStateInternal(STATE_DRAGGING);
             }
-        } else if (dy < 0) { // Downward
-            if (!target.canScrollVertically(-1)) {
+        } else if (dy < 0) { // Downward 向下滑动
+            //target.canScrollVertically(-1)//判断target是否可以向下滑动,true:能
+            if (!target.canScrollVertically(-1)) {//target不能向下滑动
+                System.out.print("  Downward canScrollVertically(-1) false");
                 if (newTop <= mMaxOffset || mHideable) {
                     consumed[1] = dy;
                     ViewCompat.offsetTopAndBottom(child, -dy);
@@ -403,11 +419,25 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
                     ViewCompat.offsetTopAndBottom(child, -consumed[1]);
                     setStateInternal(STATE_COLLAPSED);
                 }
+            } else {//能向下滑动
+                if (mState == STATE_DRAGGING) {
+                    if (newTop <= mMaxOffset || mHideable) {
+                        consumed[1] = dy;
+                        ViewCompat.offsetTopAndBottom(child, -dy);
+                        setStateInternal(STATE_DRAGGING);
+                    } else {
+                        consumed[1] = currentTop - mMaxOffset;
+                        ViewCompat.offsetTopAndBottom(child, -consumed[1]);
+                        setStateInternal(STATE_COLLAPSED);
+                    }
+                }
+                System.out.print("  Downward canScrollVertically(-1) true");
             }
         }
         dispatchOnSlide(child.getTop());
         mLastNestedScrollDy = dy;
         mNestedScrolled = true;
+        System.out.print("\n");
     }
 
     @Override
@@ -717,6 +747,7 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             if (mState == STATE_DRAGGING) {
+                System.out.println("mDragCallback tryCaptureView mState == STATE_DRAGGING");
                 return false;
             }
             if (mTouchingScrollingChild1 || mTouchingScrollingChild2) {
@@ -731,7 +762,9 @@ public class CustomBottomSheetBehavior3<V extends View> extends CoordinatorLayou
                 }*/
                 boolean scrollAble1 = scroll1 != null && scroll1.canScrollVertically(-1);
                 boolean scrollAble2 = scroll2 != null && scroll2.canScrollVertically(-1);
-                return scrollAble1 || scrollAble2;
+                boolean result = scrollAble1 || scrollAble2;
+                System.out.println("mDragCallback tryCaptureView result=" + result);
+                return result;
             }
             return mViewRef != null && mViewRef.get() == child;
         }
