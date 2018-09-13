@@ -23,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         val behavior = CustomBottomSheetBehavior2.from(scrollView)
-        behavior.state = CustomBottomSheetBehavior2.STATE_EXPANDED
-        //behavior.isHideable = true
+        behavior.state = CustomBottomSheetBehavior2.STATE_HALF
+        behavior.isHideable = false
         behavior.setBottomSheetCallback(object : CustomBottomSheetBehavior2.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == CustomBottomSheetBehavior2.STATE_COLLAPSED) {

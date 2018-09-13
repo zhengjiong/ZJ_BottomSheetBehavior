@@ -301,6 +301,7 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
         // happening over the scrolling content as nested scrolling logic handles that case.
         View scroll1 = mNestedScrollingChildRef1.get();
         View scroll2 = mNestedScrollingChildRef2.get();
+
         return action == MotionEvent.ACTION_MOVE && (scroll1 != null || scroll2 != null) &&
                 !mIgnoreEvents && mState != STATE_DRAGGING &&
                 !parent.isPointInChildBounds(scroll1, (int) event.getX(), (int) event.getY()) &&
@@ -350,9 +351,12 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
     }
 
     @Override
-    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed) {
+    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed, int type) {
 
         if (!mAllowUserDragging) {
+            return;
+        }
+        if (Math.abs(dx) > Math.abs(dy / 2)) {
             return;
         }
         View scrollingChild1 = mNestedScrollingChildRef1.get();
@@ -394,9 +398,9 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
                 }
             }
         }
+        mNestedScrolled = true;
         dispatchOnSlide(child.getTop());
         mLastNestedScrollDy = dy;
-        mNestedScrolled = true;
     }
 
     @Override
@@ -408,10 +412,29 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
             setStateInternal(STATE_EXPANDED);
             return;
         }
-        if ((target != mNestedScrollingChildRef1.get() &&target != mNestedScrollingChildRef2.get()) || !mNestedScrolled) {
+        if (child.getTop() == mHalfOffset) {
+            setStateInternal(STATE_HALF);
             return;
         }
-
+        if ((target != mNestedScrollingChildRef1.get() && target != mNestedScrollingChildRef2.get()) || !mNestedScrolled) {
+            return;
+        }
+        /*if (child.getTop() == mHalfOffset && target == mNestedScrollingChildRef1.get()) {
+            if (mNestedScrollingChildRef1.get().canScrollVertically(View.SCROLL_AXIS_VERTICAL)) {
+                return;
+            }
+        }
+        if (child.getTop() == mHalfOffset && target == mNestedScrollingChildRef2.get()) {
+            if (mNestedScrollingChildRef2.get().canScrollVertically(View.SCROLL_AXIS_VERTICAL)) {
+                return;
+            }
+        }*/
+        /*if (target != mNestedScrollingChildRef1.get() || !mNestedScrolled) {
+            return;
+        }
+        if (target != mNestedScrollingChildRef2.get() || !mNestedScrolled) {
+            return;
+        }*/
         int top;
         int targetState;
         if (mLastNestedScrollDy > 0) {
@@ -462,7 +485,8 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
         if (!mAllowUserDragging) {
             return false;
         }
-        return (target == mNestedScrollingChildRef1.get() || target == mNestedScrollingChildRef2.get()) && (mState != STATE_EXPANDED || super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY));
+        return (target == mNestedScrollingChildRef1.get() || target == mNestedScrollingChildRef2.get()) &&
+                ((mState != STATE_EXPANDED && mState != STATE_HALF) || super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY));
     }
 
 
@@ -880,4 +904,11 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
         return (CustomBottomSheetBehavior2<V>) behavior;
     }
 
+    public void setNestedScrollingChildRef1(WeakReference<View> nestedScrollingChildRef1) {
+        this.mNestedScrollingChildRef1 = nestedScrollingChildRef1;
+    }
+
+    public void setNestedScrollingChildRef2(WeakReference<View> nestedScrollingChildRef2) {
+        this.mNestedScrollingChildRef2 = nestedScrollingChildRef2;
+    }
 }
