@@ -56,11 +56,11 @@ class ViewPagerActivity : AppCompatActivity() {
 
     class PagerAdapter(fm: FragmentManager, val fragments: MutableList<Fragment>, val titles: MutableList<String>) : FragmentPagerAdapter(fm) {
 
-        override fun instantiateItem(container: ViewGroup?, position: Int): Any {
+        override fun instantiateItem(container: View, position: Int): Any {
             return super.instantiateItem(container, position)
         }
 
-        override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
             super.destroyItem(container, position, `object`)
         }
 

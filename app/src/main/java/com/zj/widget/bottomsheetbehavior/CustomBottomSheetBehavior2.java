@@ -321,6 +321,9 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
         if (mState == STATE_DRAGGING && action == MotionEvent.ACTION_DOWN) {
             return true;
         }
+        if (mViewDragHelper == null) {
+            mViewDragHelper = ViewDragHelper.create(parent, mDragCallback);
+        }
         mViewDragHelper.processTouchEvent(event);
         // Record the velocity
         if (action == MotionEvent.ACTION_DOWN) {
@@ -351,7 +354,7 @@ public class CustomBottomSheetBehavior2<V extends View> extends CoordinatorLayou
     }
 
     @Override
-    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed, int type) {
+    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed) {
 
         if (!mAllowUserDragging) {
             return;

@@ -22,21 +22,21 @@ class TestFragment : Fragment() {
     lateinit var recyclerView1: RecyclerView
     lateinit var recyclerView2: RecyclerView
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_test, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_test, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView1 = view!!.findViewById<RecyclerView>(R.id.recyclerview1)
         recyclerView2 = view.findViewById<RecyclerView>(R.id.recyclerview2)
 
         recyclerView1.layoutManager = LinearLayoutManager(context)
-        recyclerView1.adapter = Adapter(context)
+        recyclerView1.adapter = Adapter(context!!)
 
 
         recyclerView2.layoutManager = LinearLayoutManager(context)
-        recyclerView2.adapter = Adapter(context)
+        recyclerView2.adapter = Adapter(context!!)
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -48,7 +48,7 @@ class TestFragment : Fragment() {
     }
 
     class Adapter(val context: Context) : RecyclerView.Adapter<MyViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MyViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             val view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
             return MyViewHolder(view)
         }
@@ -57,7 +57,7 @@ class TestFragment : Fragment() {
             return 30
         }
 
-        override fun onBindViewHolder(holder: MyViewHolder?, position: Int) {
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder!!.title.setText("item-${position}")
         }
     }

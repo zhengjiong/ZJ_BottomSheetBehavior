@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     class Adapter(val context: Context) : RecyclerView.Adapter<MyViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MyViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             val view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
             return MyViewHolder(view)
         }
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             return 30
         }
 
-        override fun onBindViewHolder(holder: MyViewHolder?, position: Int) {
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder!!.title.setText("item-${position}")
         }
 
